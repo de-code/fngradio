@@ -50,12 +50,25 @@ def parse_pydantic_field(type_hint) -> tuple[Any, ParsedFieldInfo]:
     return type_hint, DEFAULT_PARSED_FIELD_INFO
 
 
+def get_gradio_component(type_hint) -> gr.Component | None:
+    origin = get_origin(type_hint)
+    if origin is Annotated:
+        _base, *extras = get_args(type_hint)
+        LOGGER.debug('extras: %r', extras)
+        component = next((e for e in extras if isinstance(e, gr.Component)), None)
+        return component
+    return None
+
+
 class FnGradio:
     def get_component(
         self,
         type_hint: Any,
         default_value: Any | None = None
     ) -> gr.Component:
+        gradio_component = get_gradio_component(type_hint)
+        if gradio_component is not None:
+            return gradio_component
         parsed_type_hint, field_info = parse_pydantic_field(type_hint)
         LOGGER.debug('field_info: %r', field_info)
         label = field_info.title

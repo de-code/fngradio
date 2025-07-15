@@ -13,6 +13,10 @@ def _fngr() -> FnGradio:
 
 class TestFnGradio:
     class TestGetComponent:
+        def test_should_use_gradio_component_if_present(self, fngr: FnGradio):
+            component = fngr.get_component(Annotated[str, gr.TextArea()])
+            assert isinstance(component, gr.TextArea)
+
         def test_should_map_str_to_textbox(self, fngr: FnGradio):
             component = fngr.get_component(str)
             assert isinstance(component, gr.Textbox)

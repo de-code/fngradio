@@ -2,6 +2,8 @@ from typing import Annotated
 
 from pydantic import Field
 
+import gradio as gr
+
 import fngradio as fngr
 
 
@@ -27,9 +29,20 @@ def add_float_numbers(
     return a + b
 
 
+@fngr.interface
+def to_upper_case(
+    s: Annotated[str, gr.TextArea(label="text")]
+) -> Annotated[str, gr.TextArea()]:
+    """
+    Add two float numbers
+    """
+    return s.upper()
+
+
 demo = fngr.tabbed_interface([
     add_int_numbers_with_sliders,
-    add_float_numbers
+    add_float_numbers,
+    to_upper_case
 ])
 
 
