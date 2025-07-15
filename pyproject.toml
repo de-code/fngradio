@@ -1,0 +1,40 @@
+[project]
+name = "fngradio"
+version = "0.1.0"
+description = "Define Gradio using type hints"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "gradio>=5.37.0",
+    "pydantic>=2.11.7",
+    "websockets>=10.0,<13.0",
+]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.3.0",
+    "mypy>=1.17.0",
+    "pylint>=3.3.7",
+    "pytest>=8.4.1",
+    "pytest-watcher>=0.4.3",
+]
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 100
+disable = """
+    missing-docstring,
+    too-few-public-methods,
+    duplicate-code
+"""
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error"
+]
+
+[tool.pytest-watcher]
+now = true
+clear = false
+delay = 0.2
+runner = ".venv/bin/python"
+runner_args = ["-m", "pytest"]
