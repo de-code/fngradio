@@ -31,10 +31,10 @@ def add_float_numbers(
 
 @fngr.interface
 def to_upper_case(
-    s: Annotated[str, gr.TextArea(label="text")]
+    s: Annotated[str, gr.TextArea(label="text", value="Hello")]
 ) -> Annotated[str, gr.TextArea()]:
     """
-    Add two float numbers
+    Converts text to upper case
     """
     return s.upper()
 
@@ -47,4 +47,4 @@ demo = fngr.tabbed_interface([
 
 
 if __name__ == '__main__':
-    demo.launch(share=False)
+    demo.launch(share=False, mcp_server=True)

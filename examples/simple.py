@@ -9,4 +9,4 @@ def add_int_numbers(a: int, b: int) -> int:
 
 
 if __name__ == '__main__':
-    add_int_numbers.launch(share=False)
+    add_int_numbers.launch(share=False, mcp_server=True)
