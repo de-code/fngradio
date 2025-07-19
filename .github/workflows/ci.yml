@@ -27,3 +27,6 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --locked --all-extras --dev
+
+      - name: Linting
+        run: make dev-lint
