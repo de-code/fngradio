@@ -28,7 +28,7 @@ jobs:
           python-version-file: ".python-version"
 
       - name: Install dependencies
-        run: uv sync --locked --all-extras --dev
+        run: make dev-install
 
       - name: Linting
         run: make dev-lint
