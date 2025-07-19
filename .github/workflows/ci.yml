@@ -44,6 +44,7 @@ jobs:
       name: testpypi
       url: https://test.pypi.org/p/fngradio
     permissions:
+      contents: read
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - uses: actions/checkout@v4
