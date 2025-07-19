@@ -56,7 +56,7 @@ jobs:
 
   testpypi-publish:
     needs: ["build-and-test"]
-    name: Upload release to PyPI
+    name: Upload release to Test PyPI
     runs-on: ubuntu-latest
     environment:
       name: testpypi
@@ -76,3 +76,23 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
+
+  pypi-publish:
+    needs: ["build-and-test"]
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/fngradio
+    permissions:
+      contents: read
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    steps:
+      - name: Download dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
