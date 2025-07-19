@@ -36,6 +36,19 @@ jobs:
       - name: Unit tests
         run: make dev-unit-tests
 
+  testpypi-publish:
+    needs: ["build-and-test"]
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/fngradio
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: mtkennerly/dunamai-action@v1
         with:
           env-var: VERSION
@@ -47,3 +60,6 @@ jobs:
 
       - name: Build dist
         run: make dev-build-dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
