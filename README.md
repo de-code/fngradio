@@ -1,6 +1,6 @@
 # FnGradio
 
-Define Gradio apps using type hints.
+This is an experimental library that allows you to define Gradio apps using type hints.
 
 ## Install
 
