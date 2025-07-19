@@ -36,6 +36,15 @@ jobs:
       - name: Unit tests
         run: make dev-unit-tests
 
+      - name: Build dist
+        run: make dev-build-dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
   testpypi-publish:
     needs: ["build-and-test"]
     name: Upload release to PyPI
@@ -47,24 +56,11 @@ jobs:
       contents: read
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
-      - uses: actions/checkout@v4
+      - name: Download dists
+        uses: actions/download-artifact@v4
         with:
-          fetch-depth: 0
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-
-      - uses: mtkennerly/dunamai-action@v1
-        with:
-          env-var: VERSION
-          args: --style semver --no-metadata
-      - run: echo $VERSION
-
-      - name: Set version
-        run: uv version "$VERSION"
-
-      - name: Build dist
-        run: make dev-build-dist
+          name: python-package-distributions
+          path: dist/
 
       - name: Publish package distributions to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
