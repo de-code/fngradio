@@ -36,6 +36,15 @@ jobs:
       - name: Unit tests
         run: make dev-unit-tests
 
+      - uses: mtkennerly/dunamai-action@v1
+        with:
+          env-var: VERSION
+          args: --style semver --no-metadata
+      - run: echo $VERSION
+
+      - name: Set version
+        run: uv version "$VERSION"
+
       - name: Build dist
         run: make dev-build-dist
 
