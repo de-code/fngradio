@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
@@ -33,3 +35,9 @@ jobs:
 
       - name: Unit tests
         run: make dev-unit-tests
+
+      - uses: mtkennerly/dunamai-action@v1
+        with:
+          env-var: VERSION
+          args: --style semver
+      - run: echo $VERSION
