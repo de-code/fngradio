@@ -57,3 +57,7 @@ dev-run-example-simple:
 
 dev-run-example-complex:
 	$(UV) run -m examples.complex
+
+
+dev-build-dist:
+	$(UV) build

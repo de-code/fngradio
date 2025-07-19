@@ -44,3 +44,6 @@ jobs:
 
       - name: Set version
         run: uv version "$VERSION"
+
+      - name: Build dist
+        run: make dev-build-dist
