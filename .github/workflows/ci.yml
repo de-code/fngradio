@@ -57,7 +57,7 @@ jobs:
       - uses: mtkennerly/dunamai-action@v1
         with:
           env-var: VERSION
-          args: --style pep440
+          args: --style semver --local-scheme none
       - run: echo $VERSION
 
       - name: Set version
