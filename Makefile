@@ -5,6 +5,8 @@ UV = uv
 PIP = $(VENV)/bin/pip
 PYTHON = $(VENV)/bin/python
 
+UV_RUN = $(UV) run --no-sync
+
 PYTEST_WATCH_MODULES =
 ARGS =
 
@@ -18,7 +20,7 @@ venv-create:
 	$(UV) venv
 
 dev-install:
-	$(UV) sync
+	$(UV) sync --frozen --all-extras --dev
 
 dev-upgrade-all:
 	$(UV) sync --upgrade
@@ -27,22 +29,22 @@ dev-venv: venv-create dev-install
 
 
 dev-flake8:
-	$(UV) run -m flake8 fngradio tests
+	$(UV_RUN) -m flake8 fngradio tests
 
 dev-pylint:
-	$(UV) run -m pylint fngradio tests
+	$(UV_RUN) -m pylint fngradio tests
 
 dev-mypy:
-	$(UV) run -m mypy --check-untyped-defs fngradio tests
+	$(UV_RUN) -m mypy --check-untyped-defs fngradio tests
 
 dev-lint: dev-flake8 dev-pylint dev-mypy
 
 
 dev-unit-tests:
-	$(UV) run -m pytest -vv
+	$(UV_RUN) -m pytest -vv
 
 dev-watch:
-	$(UV) run -m pytest_watcher \
+	$(UV_RUN) -m pytest_watcher \
 		--runner=$(VENV)/bin/python \
 		. \
 		-m pytest -vv $(PYTEST_WATCH_MODULES)
@@ -57,3 +59,7 @@ dev-run-example-simple:
 
 dev-run-example-complex:
 	$(UV) run -m examples.complex
+
+
+dev-build-dist:
+	$(UV) build

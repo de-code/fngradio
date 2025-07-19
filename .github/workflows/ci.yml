@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
@@ -26,10 +28,51 @@ jobs:
           python-version-file: ".python-version"
 
       - name: Install dependencies
-        run: uv sync --locked --all-extras --dev
+        run: make dev-install
 
       - name: Linting
         run: make dev-lint
 
       - name: Unit tests
         run: make dev-unit-tests
+
+      - uses: mtkennerly/dunamai-action@v1
+        with:
+          env-var: VERSION
+          args: --style semver --no-metadata
+      - run: echo $VERSION
+
+      - name: Set version
+        run: uv version "$VERSION"
+
+      - name: Build dist
+        run: make dev-build-dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  testpypi-publish:
+    needs: ["build-and-test"]
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/fngradio
+    permissions:
+      contents: read
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    steps:
+      - name: Download dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package distributions to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
