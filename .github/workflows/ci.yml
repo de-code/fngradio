@@ -41,3 +41,6 @@ jobs:
           env-var: VERSION
           args: --style semver
       - run: echo $VERSION
+
+      - name: Set version
+        run: uv version "$VERSION"
