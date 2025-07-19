@@ -55,6 +55,7 @@ jobs:
           path: dist/
 
   testpypi-publish:
+    if: true
     needs: ["build-and-test"]
     name: Upload release to Test PyPI
     runs-on: ubuntu-latest
