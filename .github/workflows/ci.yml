@@ -30,3 +30,6 @@ jobs:
 
       - name: Linting
         run: make dev-lint
+
+      - name: Unit tests
+        run: make dev-unit-tests
