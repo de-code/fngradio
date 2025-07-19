@@ -10,6 +10,10 @@ dependencies = [
     "websockets>=10.0,<13.0",
 ]
 
+[project.urls]
+homepage = "https://github.com/de-code/fngradio"
+repository = "https://github.com/de-code/fngradio"
+
 [dependency-groups]
 dev = [
     "flake8>=7.3.0",
