@@ -29,13 +29,13 @@ dev-venv: venv-create dev-install
 
 
 dev-flake8:
-	$(UV_RUN) -m flake8 fngradio tests
+	$(UV_RUN) -m flake8 fngradio tests examples
 
 dev-pylint:
-	$(UV_RUN) -m pylint fngradio tests
+	$(UV_RUN) -m pylint fngradio tests examples
 
 dev-mypy:
-	$(UV_RUN) -m mypy --check-untyped-defs fngradio tests
+	$(UV_RUN) -m mypy --check-untyped-defs fngradio tests examples
 
 dev-lint: dev-flake8 dev-pylint dev-mypy
 
@@ -54,11 +54,11 @@ dev-test: dev-lint dev-unit-tests
 
 
 dev-run-example-simple:
-	$(UV) run -m examples.simple
+	$(UV_RUN) -m examples.simple
 
 
 dev-run-example-complex:
-	$(UV) run -m examples.complex
+	$(UV_RUN) -m examples.complex
 
 
 dev-build-dist:
