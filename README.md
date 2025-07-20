@@ -43,7 +43,7 @@ You can define the Gradio interface around by just adding the `fngr.interface` a
 import fngradio as fngr
 
 
-@fngr.interface
+@fngr.interface()
 def add_int_numbers(a: int, b: int) -> int:
     """
     Add two int numbers
@@ -65,7 +65,7 @@ from pydantic import Field
 import fngradio as fngr
 
 
-@fngr.interface
+@fngr.interface()
 def add_int_numbers_with_sliders(
     a: Annotated[int, Field(title="First value", ge=0, le=100)] = 50,
     b: Annotated[int, Field(title="Second value", ge=0, le=100)] = 50
@@ -101,7 +101,8 @@ from typing import Annotated
 import gradio as gr
 import fngradio as fngr
 
-@fngr.interface
+
+@fngr.interface()
 def to_upper_case(
     s: Annotated[str, gr.TextArea(label="text", value="Hello")]
 ) -> Annotated[str, gr.TextArea()]:

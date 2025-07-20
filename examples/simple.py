@@ -1,6 +1,6 @@
 import fngradio as fngr
 
-@fngr.interface
+@fngr.interface()
 def add_int_numbers(a: int, b: int) -> int:
     """
     Add two int numbers
