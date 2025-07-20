@@ -1,14 +1,19 @@
-from typing import Annotated
+from typing import Annotated, Literal
 import gradio as gr
 from pydantic import Field
 import pytest
 
-from fngradio.decorators import FnGradio, UnsupportedTypeError
+from fngradio.decorators import FnGradio, UnsupportedTypeError, get_literal_values
 
 
 @pytest.fixture(name='fngr')
 def _fngr() -> FnGradio:
     return FnGradio()
+
+
+class TestGetLiteralValues:
+    def test_should_return_values(self):
+        assert get_literal_values(Literal['a', 'b']) == ('a', 'b')
 
 
 class TestFnGradio:
@@ -57,6 +62,36 @@ class TestFnGradio:
             )
             assert isinstance(component, gr.Checkbox)
             assert component.value is True
+
+        def test_should_map_literal_to_dropdown(self, fngr: FnGradio):
+            component = fngr.get_component(
+                type_hint=Literal['value_1', 'value_2', 'value_3'],
+                default_value='value_2'
+            )
+            assert isinstance(component, gr.Dropdown)
+            assert component.choices == [
+                ('value_1', 'value_1'),
+                ('value_2', 'value_2'),
+                ('value_3', 'value_3')
+            ]
+            assert component.value == 'value_2'
+
+        def test_should_map_annotated_literal_to_dropdown(self, fngr: FnGradio):
+            component = fngr.get_component(
+                type_hint=Annotated[
+                    Literal['value_1', 'value_2', 'value_3'],
+                    Field(title='Label 1')
+                ],
+                default_value='value_2'
+            )
+            assert isinstance(component, gr.Dropdown)
+            assert component.choices == [
+                ('value_1', 'value_1'),
+                ('value_2', 'value_2'),
+                ('value_3', 'value_3')
+            ]
+            assert component.value == 'value_2'
+            assert component.label == 'Label 1'
 
         def test_should_map_int_field_with_range_to_slider(self, fngr: FnGradio):
             component = fngr.get_component(
