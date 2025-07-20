@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import Field
 
@@ -39,10 +39,19 @@ def to_upper_case(
     return s.upper()
 
 
+@fngr.interface
+def say(what: Literal["hi", "bye"]) -> str:
+    """
+    Says Hi! or Bye!
+    """
+    return "Hi!" if what == "hi" else "Bye!"
+
+
 demo = fngr.tabbed_interface([
     add_int_numbers_with_sliders,
     add_float_numbers,
-    to_upper_case
+    to_upper_case,
+    say
 ])
 
 

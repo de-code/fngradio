@@ -76,6 +76,22 @@ def add_int_numbers_with_sliders(
     return a + b
 ```
 
+## Dropdown for Literal
+
+```python
+from typing import Literal
+from pydantic import Field
+import fngradio as fngr
+
+
+@fngr.interface
+def say(what: Literal["hi", "bye"]) -> str:
+    """
+    Says Hi! or Bye!
+    """
+    return "Hi!" if what == "hi" else "Bye!"
+```
+
 ## Specify Component in Type Annotation
 
 You can also specify the Gradio Component to use by adding it to the type annotation:

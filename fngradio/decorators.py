@@ -1,7 +1,18 @@
 from dataclasses import dataclass
 import inspect
 import logging
-from typing import Annotated, Any, Callable, cast, get_args, get_origin, get_type_hints
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    Literal,
+    Sequence,
+    TypeVar,
+    cast,
+    get_args,
+    get_origin,
+    get_type_hints
+)
 
 import annotated_types
 from pydantic.fields import FieldInfo
@@ -12,6 +23,9 @@ import gradio as gr
 LOGGER = logging.getLogger(__name__)
 
 
+T = TypeVar('T')
+
+
 class UnsupportedTypeError(ValueError):
     def __init__(self, type_hint: Any) -> None:
         super().__init__(f'Unsupported type: {type_hint}')
@@ -19,16 +33,24 @@ class UnsupportedTypeError(ValueError):
 
 
 @dataclass(frozen=True)
-class ParsedFieldInfo:
+class ParsedFieldInfo[T]:
     title: str | None = None
     ge: annotated_types.SupportsGe | None = None
     le: annotated_types.SupportsLe | None = None
+    valid_values: Sequence[T] | None = None
 
 
-DEFAULT_PARSED_FIELD_INFO = ParsedFieldInfo()
+DEFAULT_PARSED_FIELD_INFO = ParsedFieldInfo[Any]()
 
 
-def parse_pydantic_field_info(field_info: FieldInfo) -> ParsedFieldInfo:
+def get_literal_values(literal) -> tuple:
+    return get_args(literal)
+
+
+def parse_pydantic_field_info(
+    field_info: FieldInfo,
+    valid_values: Sequence[T] | None = None
+) -> ParsedFieldInfo:
     ge: annotated_types.SupportsGe | None = None
     le: annotated_types.SupportsLe | None = None
     for meta in field_info.metadata:
@@ -36,18 +58,30 @@ def parse_pydantic_field_info(field_info: FieldInfo) -> ParsedFieldInfo:
             ge = meta.ge
         if isinstance(meta, annotated_types.Le):
             le = meta.le
-    return ParsedFieldInfo(title=field_info.title, ge=ge, le=le)
+    return ParsedFieldInfo[T](
+        title=field_info.title,
+        ge=ge,
+        le=le,
+        valid_values=valid_values
+    )
 
 
 def parse_pydantic_field(type_hint) -> tuple[Any, ParsedFieldInfo]:
     origin = get_origin(type_hint)
+    extras: Sequence[Any] = []
+    valid_values: Sequence[Any] | None = None
     if origin is Annotated:
         base, *extras = get_args(type_hint)
         LOGGER.debug('extras: %r', extras)
-        field_info = next((e for e in extras if isinstance(e, FieldInfo)), None)
-        if field_info is not None:
-            return base, parse_pydantic_field_info(field_info)
-    return type_hint, DEFAULT_PARSED_FIELD_INFO
+    else:
+        base = type_hint
+    if get_origin(base) is Literal:
+        valid_values = get_literal_values(base)
+        LOGGER.debug('Literal: %r (values: %r)', base, valid_values)
+    field_info = next((e for e in extras if isinstance(e, FieldInfo)), None)
+    if field_info is not None:
+        return base, parse_pydantic_field_info(field_info, valid_values=valid_values)
+    return type_hint, ParsedFieldInfo(valid_values=valid_values)
 
 
 def get_gradio_component(type_hint) -> gr.Component | None:
@@ -61,7 +95,7 @@ def get_gradio_component(type_hint) -> gr.Component | None:
 
 
 class FnGradio:
-    def get_component(
+    def get_component(  # pylint: disable=too-many-return-statements
         self,
         type_hint: Any,
         default_value: Any | None = None
@@ -89,6 +123,12 @@ class FnGradio:
             return gr.Number(value=default_value, label=label)
         if parsed_type_hint is str:
             return gr.Textbox(value=default_value, label=label)
+        if field_info and field_info.valid_values:
+            return gr.Dropdown(
+                value=default_value,
+                label=label,
+                choices=list(field_info.valid_values)
+            )
         raise UnsupportedTypeError(type_hint)
 
     def interface(self, fn: Callable, **kwargs) -> gr.Interface:
