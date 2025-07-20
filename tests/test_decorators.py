@@ -114,31 +114,31 @@ class TestFnGradio:
                 return s.upper()
 
             with pytest.raises(UnsupportedTypeError):
-                fngr.interface(fn)
+                fngr.interface()(fn)
 
         def test_should_create_gradio_interface_with_simple_type(
             self,
             fngr: FnGradio
         ):
+            @fngr.interface()
             def fn(s: str) -> str:
                 return s.upper()
 
-            interface = fngr.interface(fn)
-            assert interface.input_components and len(interface.input_components) == 1
-            assert isinstance(interface.input_components[0], gr.Textbox)
-            assert len(interface.output_components) == 1
-            assert isinstance(interface.output_components[0], gr.Textbox)
+            assert fn.input_components and len(fn.input_components) == 1
+            assert isinstance(fn.input_components[0], gr.Textbox)
+            assert len(fn.output_components) == 1
+            assert isinstance(fn.output_components[0], gr.Textbox)
 
         def test_should_create_gradio_interface_with_slider(
             self,
             fngr: FnGradio
         ):
+            @fngr.interface()
             def fn(n: Annotated[int, Field(ge=10, le=100)] = 50) -> int:
                 return n
 
-            interface = fngr.interface(fn)
-            assert interface.input_components and len(interface.input_components) == 1
-            input_component = interface.input_components[0]
+            assert fn.input_components and len(fn.input_components) == 1
+            input_component = fn.input_components[0]
             assert isinstance(input_component, gr.Slider)
             assert input_component.minimum == 10
             assert input_component.maximum == 100
@@ -148,8 +148,18 @@ class TestFnGradio:
             self,
             fngr: FnGradio
         ):
+            @fngr.interface()
             def fn(s: str) -> str:
                 return s.upper()
 
-            interface = fngr.interface(fn)
-            assert interface.api_name == 'fn'
+            assert fn.api_name == 'fn'
+
+        def test_should_allow_overriding_api_name(
+            self,
+            fngr: FnGradio
+        ):
+            @fngr.interface(api_name='fn_1')
+            def fn(s: str) -> str:
+                return s.upper()
+
+            assert fn.api_name == 'fn_1'

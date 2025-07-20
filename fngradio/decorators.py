@@ -131,26 +131,33 @@ class FnGradio:
             )
         raise UnsupportedTypeError(type_hint)
 
-    def interface(self, fn: Callable, **kwargs) -> gr.Interface:
-        hints = get_type_hints(fn, include_extras=True)
-        sig = inspect.signature(fn)
-        inputs = [
-            self.get_component(
-                type_hint=hints.get(name),
-                default_value=param.default if param.default is not param.empty else None
+    def interface(
+        self,
+        *,
+        api_name: str | None = None,
+        **kwargs
+    ) -> Callable[[Callable], gr.Interface]:
+        def wrapper(fn: Callable) -> gr.Interface:
+            hints = get_type_hints(fn, include_extras=True)
+            sig = inspect.signature(fn)
+            inputs = [
+                self.get_component(
+                    type_hint=hints.get(name),
+                    default_value=param.default if param.default is not param.empty else None
+                )
+                for name, param in sig.parameters.items()
+            ]
+            outputs = [
+                self.get_component(hints.get('return'))
+            ]
+            return gr.Interface(
+                fn=fn,
+                api_name=api_name or fn.__name__,
+                inputs=inputs,
+                outputs=outputs,
+                **kwargs
             )
-            for name, param in sig.parameters.items()
-        ]
-        outputs = [
-            self.get_component(hints.get('return'))
-        ]
-        return gr.Interface(
-            fn=fn,
-            api_name=fn.__name__,
-            inputs=inputs,
-            outputs=outputs,
-            **kwargs
-        )
+        return wrapper
 
 
 DEFAULT_FNGRADIO = FnGradio()
