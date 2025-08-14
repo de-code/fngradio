@@ -138,3 +138,33 @@ demo = fngr.tabbed_interface([
 ```
 
 The main advantage is that it will try to infer the names from the interface.
+
+Or even simpler use `FnGradioApp` for defining interfaces:
+
+```python
+from fngradio import FnGradioApp
+
+
+app = FnGradioApp()
+
+@app.interface()
+def add_int_numbers(a: int, b: int) -> int:
+    """
+    Add two int numbers
+    """
+    return a + b
+
+
+@app.interface()
+def to_upper_case(s) -> str:
+    """
+    Converts text to upper case
+    """
+    return s.upper()
+
+
+demo = app.tabbed()
+
+if __name__ == '__main__':
+    demo.launch(share=False)
+```

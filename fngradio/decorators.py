@@ -131,6 +131,27 @@ class FnGradio:
             )
         raise UnsupportedTypeError(type_hint)
 
+    def _on_interface(self, interface: gr.Interface):  # pylint: disable=redefined-outer-name
+        pass
+
+    def _create_interface(
+        self,
+        fn: Callable,
+        api_name: str,
+        inputs: Sequence[gr.Component],
+        outputs: Sequence[gr.Component],
+        **kwargs
+    ) -> gr.Interface:
+        _interface = gr.Interface(
+            fn=fn,
+            api_name=api_name,
+            inputs=inputs,
+            outputs=outputs,
+            **kwargs
+        )
+        self._on_interface(_interface)
+        return _interface
+
     def interface(
         self,
         *,
@@ -150,7 +171,7 @@ class FnGradio:
             outputs = [
                 self.get_component(hints.get('return'))
             ]
-            return gr.Interface(
+            return self._create_interface(
                 fn=fn,
                 api_name=api_name or fn.__name__,
                 inputs=inputs,

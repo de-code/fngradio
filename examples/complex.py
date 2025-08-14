@@ -4,10 +4,13 @@ from pydantic import Field
 
 import gradio as gr
 
-import fngradio as fngr
+from fngradio import FnGradioApp
 
 
-@fngr.interface()
+app = FnGradioApp()
+
+
+@app.interface()
 def add_int_numbers_with_sliders(
     a: Annotated[int, Field(title="First value", ge=0, le=100)] = 50,
     b: Annotated[int, Field(title="Second value", ge=0, le=100)] = 50
@@ -18,7 +21,7 @@ def add_int_numbers_with_sliders(
     return a + b
 
 
-@fngr.interface()
+@app.interface()
 def add_float_numbers(
     a: Annotated[int, Field(title="First value")],
     b: Annotated[int, Field(title="Second value")]
@@ -29,7 +32,7 @@ def add_float_numbers(
     return a + b
 
 
-@fngr.interface()
+@app.interface()
 def to_upper_case(
     s: Annotated[str, gr.TextArea(label="text", value="Hello")]
 ) -> Annotated[str, gr.TextArea()]:
@@ -39,7 +42,7 @@ def to_upper_case(
     return s.upper()
 
 
-@fngr.interface()
+@app.interface()
 def say(what: Literal["hi", "bye"]) -> str:
     """
     Says Hi! or Bye!
@@ -47,12 +50,7 @@ def say(what: Literal["hi", "bye"]) -> str:
     return "Hi!" if what == "hi" else "Bye!"
 
 
-demo = fngr.tabbed_interface([
-    add_int_numbers_with_sliders,
-    add_float_numbers,
-    to_upper_case,
-    say
-])
+demo = app.tabbed()
 
 
 if __name__ == '__main__':

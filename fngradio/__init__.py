@@ -6,3 +6,6 @@ from fngradio.decorators import (  # noqa
 from fngradio.tabbed_interface import (  # noqa
     tabbed_interface
 )
+from fngradio.app import (  # noqa
+    FnGradioApp
+)
