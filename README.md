@@ -156,7 +156,7 @@ def add_int_numbers(a: int, b: int) -> int:
 
 
 @app.interface()
-def to_upper_case(s) -> str:
+def to_upper_case(s: str) -> str:
     """
     Converts text to upper case
     """
