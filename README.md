@@ -192,3 +192,9 @@ def lower(s: str) -> str:
 
 app = FnGradioApp(apps=[app_1, app_2])
 ```
+
+## Example Apps
+
+Example Gradio apps demonstrating use:
+
+- [fngradio-various-api-mcp](https://huggingface.co/spaces/de-code/fngradio-various-api-mcp)
