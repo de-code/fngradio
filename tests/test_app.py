@@ -45,3 +45,22 @@ class TestFnGradioApp:
 
         demo = fngr_app.tabbed()
         assert isinstance(demo, gr.TabbedInterface)
+
+    def test_should_combine_apps(
+        self
+    ):
+        app_1 = FnGradioApp()
+        app_2 = FnGradioApp()
+
+        @app_1.interface()
+        def upper(s: str) -> str:
+            return s.upper()
+
+        @app_2.interface()
+        def lower(s: str) -> str:
+            return s.lower()
+
+        fngr_app = FnGradioApp(apps=[app_1, app_2])
+        assert fngr_app.get_interfaces() == (
+            list(app_1.get_interfaces()) + list(app_2.get_interfaces())
+        )
