@@ -1,5 +1,6 @@
 from typing import Annotated, Literal
 
+import PIL.Image
 from pydantic import Field
 
 import gradio as gr
@@ -48,6 +49,33 @@ def say(what: Literal["hi", "bye"]) -> str:
     Says Hi! or Bye!
     """
     return "Hi!" if what == "hi" else "Bye!"
+
+
+ColorName = Literal[
+    "red",
+    "green",
+    "blue",
+    "lightred",
+    "lightgreen",
+    "lightblue"
+]
+
+
+@app.interface()
+def generate_image(
+    width: Annotated[int, Field(ge=10, le=200)] = 100,
+    height: Annotated[int, Field(ge=10, le=200)] = 100,
+    bgcolor: ColorName = "lightblue"
+) -> PIL.Image.Image:
+    """
+    Generates a image with single color
+    """
+    image = PIL.Image.new(
+        mode="RGB",
+        size=(width, height),
+        color=bgcolor
+    )
+    return image
 
 
 demo = app.tabbed()

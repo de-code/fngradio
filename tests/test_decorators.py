@@ -1,4 +1,6 @@
 from typing import Annotated, Literal
+
+import PIL.Image
 import gradio as gr
 from pydantic import Field
 import pytest
@@ -104,6 +106,13 @@ class TestFnGradio:
             assert component.value == 50
             assert component.step == 1
             assert component.label == 'Label 1'
+
+        def test_should_map_pil_image_to_image(self, fngr: FnGradio):
+            component = fngr.get_component(
+                type_hint=PIL.Image.Image,
+                default_value=None
+            )
+            assert isinstance(component, gr.Image)
 
     class TestInterface:
         def test_should_fail_without_type_hints(

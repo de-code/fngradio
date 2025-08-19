@@ -92,6 +92,31 @@ def say(what: Literal["hi", "bye"]) -> str:
     return "Hi!" if what == "hi" else "Bye!"
 ```
 
+## Image for PIL.Image.Image
+
+```python
+from typing import Literal
+import PIL.Image
+from pydantic import Field
+import fngradio as fngr
+
+
+@fngr.interface
+def generate_image(
+    width: Annotated[int, Field(ge=10, le=200)] = 100,
+    height: Annotated[int, Field(ge=10, le=200)] = 100
+) -> PIL.Image.Image:
+    """
+    Generates sample image
+    """
+    image = PIL.Image.new(
+        mode="RGB",
+        size=(width, height),
+        color="lightblue"
+    )
+    return image
+```
+
 ## Specify Component in Type Annotation
 
 You can also specify the Gradio Component to use by adding it to the type annotation:

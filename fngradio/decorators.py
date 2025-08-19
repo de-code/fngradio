@@ -14,6 +14,7 @@ from typing import (
     get_type_hints
 )
 
+import PIL.Image
 import annotated_types
 from pydantic.fields import FieldInfo
 
@@ -123,6 +124,11 @@ class FnGradio:
             return gr.Number(value=default_value, label=label)
         if parsed_type_hint is str:
             return gr.Textbox(value=default_value, label=label)
+        if parsed_type_hint is PIL.Image.Image:
+            return gr.Image(
+                value=default_value,
+                label=label
+            )
         if field_info and field_info.valid_values:
             return gr.Dropdown(
                 value=default_value,
