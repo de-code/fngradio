@@ -43,3 +43,9 @@ clear = false
 delay = 0.2
 runner = ".venv/bin/python"
 runner_args = ["-m", "pytest"]
+
+[tool.setuptools.package-data]
+fngradio = ["py.typed"]
+
+[tool.setuptools]
+include-package-data = true
