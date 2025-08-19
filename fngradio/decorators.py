@@ -33,14 +33,14 @@ class UnsupportedTypeError(ValueError):
 
 
 @dataclass(frozen=True)
-class ParsedFieldInfo[T]:
+class ParsedFieldInfo:
     title: str | None = None
     ge: annotated_types.SupportsGe | None = None
     le: annotated_types.SupportsLe | None = None
-    valid_values: Sequence[T] | None = None
+    valid_values: Sequence[Any] | None = None
 
 
-DEFAULT_PARSED_FIELD_INFO = ParsedFieldInfo[Any]()
+DEFAULT_PARSED_FIELD_INFO = ParsedFieldInfo()
 
 
 def get_literal_values(literal) -> tuple:
@@ -58,7 +58,7 @@ def parse_pydantic_field_info(
             ge = meta.ge
         if isinstance(meta, annotated_types.Le):
             le = meta.le
-    return ParsedFieldInfo[T](
+    return ParsedFieldInfo(
         title=field_info.title,
         ge=ge,
         le=le,
