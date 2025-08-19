@@ -168,3 +168,27 @@ demo = app.tabbed()
 if __name__ == '__main__':
     demo.launch(share=False)
 ```
+
+## Combine Apps
+
+In order to support apps across modules, you can combine apps:
+
+```python
+from fngradio import FnGradioApp
+
+
+app_1 = FnGradioApp()
+app_2 = FnGradioApp()
+
+@app_1.interface()
+def upper(s: str) -> str:
+    return s.upper()
+
+
+@app_2.interface()
+def lower(s: str) -> str:
+    return s.lower()
+
+
+app = FnGradioApp(apps=[app_1, app_2])
+```

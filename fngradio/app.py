@@ -7,9 +7,12 @@ from fngradio.tabbed_interface import tabbed_interface
 
 
 class FnGradioApp(FnGradio):
-    def __init__(self) -> None:
+    def __init__(self, apps: Sequence['FnGradioApp'] | None = None) -> None:
         super().__init__()
         self._interfaces: list[gr.Interface] = []
+        if apps is not None:
+            for app in apps:
+                self._interfaces.extend(app._interfaces)
 
     def get_interfaces(self) -> Sequence[gr.Interface]:
         return self._interfaces
