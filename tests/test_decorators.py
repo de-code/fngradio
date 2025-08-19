@@ -163,3 +163,29 @@ class TestFnGradio:
                 return s.upper()
 
             assert fn.api_name == 'fn_1'
+
+        def test_should_set_description_to_function_docs(
+            self,
+            fngr: FnGradio
+        ):
+            @fngr.interface()
+            def fn(s: str) -> str:
+                '''
+                This is the description.
+                '''
+                return s.upper()
+
+            assert fn.description == 'This is the description.'
+
+        def test_should_be_able_to_disable_description(
+            self,
+            fngr: FnGradio
+        ):
+            @fngr.interface(description=None)
+            def fn(s: str) -> str:
+                '''
+                This is the description.
+                '''
+                return s.upper()
+
+            assert fn.description is None
