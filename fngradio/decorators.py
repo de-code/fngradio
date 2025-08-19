@@ -171,12 +171,15 @@ class FnGradio:
             outputs = [
                 self.get_component(hints.get('return'))
             ]
+            _kwargs = dict(kwargs)
+            if 'description' not in kwargs and fn.__doc__:
+                _kwargs['description'] = fn.__doc__.strip()
             return self._create_interface(
                 fn=fn,
                 api_name=api_name or fn.__name__,
                 inputs=inputs,
                 outputs=outputs,
-                **kwargs
+                **_kwargs
             )
         return wrapper
 
