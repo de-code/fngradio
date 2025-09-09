@@ -41,7 +41,7 @@ dev-lint: dev-flake8 dev-pylint dev-mypy
 
 
 dev-unit-tests:
-	$(UV_RUN) -m pytest -vv
+	$(UV_RUN) -m pytest -vv $(ARGS)
 
 dev-watch:
 	$(UV_RUN) -m pytest_watcher \
