@@ -84,7 +84,7 @@ from pydantic import Field
 import fngradio as fngr
 
 
-@fngr.interface
+@fngr.interface()
 def say(what: Literal["hi", "bye"]) -> str:
     """
     Says Hi! or Bye!
@@ -101,7 +101,7 @@ from pydantic import Field
 import fngradio as fngr
 
 
-@fngr.interface
+@fngr.interface()
 def generate_image(
     width: Annotated[int, Field(ge=10, le=200)] = 100,
     height: Annotated[int, Field(ge=10, le=200)] = 100
